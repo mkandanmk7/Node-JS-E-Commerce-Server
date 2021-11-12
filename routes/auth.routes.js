@@ -12,6 +12,6 @@ router.post("/login", service.login);
 router.post("/resettoken", service.resetToken);
 
 //verify and update pass;
-// router.post("/updatepassword/:userid/:token", service.verifyAndUpdatePassword);
+router.post("/resetpassword/:userid/:token", service.verifyAndUpdatePassword);
 
 module.exports = router;

@@ -8,7 +8,7 @@ const sentMail = async (email, subject, text) => {
     service: "gmail",
     auth: {
       user: process.env.MAILER_USERNAME,
-      PASS: process.env.MAILER_PASSWORD,
+      pass: process.env.MAILER_PASSWORD,
     },
   });
 
@@ -28,3 +28,5 @@ const sentMail = async (email, subject, text) => {
     }
   });
 };
+
+module.exports = sentMail;

@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 const { ObjectId } = require("mongodb");
-const sendMail = require("../shared/sendMailer");
+const sentMail = require("../shared/sendMailer");
 
 const service = {
   async register(req, res) {
@@ -65,6 +65,76 @@ const service = {
     } catch (error) {
       console.log("error in login", error);
       res.status(500).send("Error in login");
+    }
+  },
+
+  //reset token
+  async resetToken(req, res) {
+    try {
+      const user = await db.users.findOne({ email: req.body.email });
+      console.log(user);
+      if (!user) return res.status(400).send("user doesn't exist");
+      if (user.restToken) {
+        let removeToken = await db.users.update(
+          { email: user.email },
+          { $unset: { resetToken: 1, resetExpire: 1 } }
+        );
+      }
+      let token = crypto.randomBytes(32).toString("hex"); //gen random string for token
+      //hash token to store in db
+      const hashedToken = await bcrypt.hash(token, Number(12));
+
+      console.log(token, "hashed", hashedToken);
+
+      //expire of token for 1hour
+      let expire = new Date(Date.now() + 1 * 3600 * 1000); //current time +60mins
+
+      const data = await db.users.findOneAndUpdate(
+        { email: user.email },
+        { $set: { resetToken: hashedToken, resetExpire: expire } },
+        { ReturnDocument: "after" }
+      );
+
+      const link = `https://mayu-makeyouup.netlify.app/resetPassword/${user._id}/${token}`;
+      await sentMail(user.email, "password reset", link);
+      res
+        .status(200)
+        .send({ message: "Link sent to your email, Check it", link });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  },
+
+  //verify token and change pass
+  async verifyAndUpdatePassword(req, res) {
+    try {
+      //use id
+      console.log("update process");
+      let user = await db.users.findOne({ _id: ObjectId(req.params.userid) });
+      if (!user.resetToken)
+        return res.status(400).send("invalid or expired link");
+      let token = req.params.token; //from url token;
+      console.log(token);
+      const isValidToken = await bcrypt.compare(token, user.resetToken); // if same returns true;
+      console.log(isValidToken);
+      const isExpired = user.resetExpire > Date.now();
+      console.log(user.resetExpire);
+      console.log(Date.now(), user.resetExpire.getTime(), isExpired);
+
+      if (isValidToken && isExpired) {
+        const hashedPassword = await bcrypt.hash(req.body.password, Number(12));
+        let newPass = await db.users.findOneAndUpdate(
+          { _id: ObjectId(req.params.userId) },
+          {
+            $set: { password: hashedPassword },
+            $unset: { resetToken: 1, resetExpire: 1 },
+          },
+          { ReturnDocument: "after" }
+        );
+        res.status(200).send("password updated successfully");
+      } else return res.status(400).send("link invalid or expired");
+    } catch (error) {
+      res.status(500).send(error.message);
     }
   },
 };
