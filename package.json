@@ -1,14 +1,25 @@
 {
-  "name": "Server",
+  "name": "server",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
-    "mongodb": "^4.1.4"
+    "mongodb": "^4.1.4",
+    "nodemailer": "^6.7.0",
+    "stripe": "^8.187.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "devStart": "nodemon app.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
