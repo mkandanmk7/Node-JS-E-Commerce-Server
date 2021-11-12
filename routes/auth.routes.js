@@ -6,10 +6,10 @@ const service = require("../services/auth.service");
 router.post("/register", service.register);
 
 //login
-// router.post("/login", service.login);
+router.post("/login", service.login);
 
 //gen resetpass token
-// router.post("/resettoken", service.resetToken);
+router.post("/resettoken", service.resetToken);
 
 //verify and update pass;
 // router.post("/updatepassword/:userid/:token", service.verifyAndUpdatePassword);
