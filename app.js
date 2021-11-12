@@ -2,8 +2,10 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const mongo = require("./shared/mongo");
-
 const app = express();
+
+//routes modules imports
+const authRoutes = require("./routes/auth.routes");
 
 (async () => {
   try {
@@ -20,15 +22,15 @@ const app = express();
     //middlewares
     app.use("/auth", authRoutes);
 
-    app.use("/users", userRoutes);
+    // app.use("/users", userRoutes);
 
-    app.use("/product", productRoutes);
+    // app.use("/product", productRoutes);
 
-    app.use("/cart", cartRoutes);
+    // app.use("/cart", cartRoutes);
 
-    app.use("/order", orderRoutes);
+    // app.use("/order", orderRoutes);
 
-    app.use("/checkout", stripeRoutes);
+    // app.use("/checkout", stripeRoutes);
     //server starter
     app.listen(port, () => {
       console.log(`server running at ${port}`);
