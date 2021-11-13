@@ -16,7 +16,7 @@ router.delete("/:id", verifyTokenAndAuthorization, service.deleteUser);
 router.get("/find/:id", verifyTokenAndAdmin, service.getUser);
 
 //get all user
-
+router.get("/", verifyTokenAndAdmin, service.getAllUser);
 //stats
 
 module.exports = router;

@@ -47,6 +47,20 @@ const service = {
   },
 
   //get all user
+  async getAllUser(req, res) {
+    const query = req.query.new;
+    try {
+      //use toArray for find();
+      const users = query
+        ? await db.users.find().sort({ _id: -1 }).limit(5).toArray()
+        : await db.users.find().toArray();
+
+      console.log(users);
+      res.status(200).send(users);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  },
 
   //get user stats
 };
