@@ -23,7 +23,15 @@ const service = {
   async updateProduct(req, res) {
     console.log("process started");
     try {
-      res.status(200).send();
+      console.log(req.params.id);
+      const updatedProduct = await db.products.findOneAndUpdate(
+        { _id: ObjectId(req.params.id) },
+        { $set: req.body },
+        { ReturnDocument: "after" }
+      );
+      console.log(updatedProduct);
+
+      res.status(200).send(updatedProduct);
     } catch (err) {
       res.status(500).send(err.message);
     }
@@ -31,17 +39,24 @@ const service = {
   //detele product
   async deleteProduct(req, res) {
     console.log("process started");
+
     try {
-      res.status(200).send();
+      await db.products.deleteOne({ _id: ObjectId(req.params.id) });
+
+      res.status(200).send("product deleted");
     } catch (err) {
       res.status(500).send(err.message);
     }
   },
   //get product
   async getProduct(req, res) {
-    console.log("process started");
+    console.log(" get process started");
     try {
-      res.status(200).send();
+      const product = await db.products.findOne({
+        _id: ObjectId(req.params.id),
+      });
+      //   console.log(product); //products details
+      res.status(200).send(product);
     } catch (err) {
       res.status(500).send(err.message);
     }
@@ -50,7 +65,41 @@ const service = {
   async getAllProduct(req, res) {
     console.log("process started");
     try {
-      res.status(200).send();
+      if (Object.keys(req.query).length === 0) {
+        let products = await db.products.find().toArray();
+
+        res.status(200).send(products);
+      } else {
+        let query = {};
+        query[$and] = [];
+        let sort, products;
+        for (let key in req.query) {
+          console.log(key, req.query);
+          if (key === "sort") {
+            sort = req.query[key];
+          } else if (key === "price") {
+            values = req.query[key].split(",");
+            values = values.map((a) => parseInt(a));
+            query["$and"].push({ [key]: { $lt: values[1], $gte: values[0] } });
+          } else {
+            query["$and"].push({ [key]: { $lt: values[1], $gte: values[0] } });
+            query["$and"].push({ [key]: { $in: req.query[key].split(",") } });
+          }
+        }
+        console.log(query);
+        if (sorr && query["#and"].length == 0) {
+          sort === "high" //asc or desc
+            ? (products = await db.products
+                .find()
+                .sort({ price: -1 })
+                .toArray())
+            : (products = await db.products
+                .find()
+                .sort({ price: 1 })
+                .toArray());
+        } else products = await db.products.find(query).toArray();
+        res.status(200).send(products);
+      }
     } catch (err) {
       res.status(500).send(err.message);
     }
