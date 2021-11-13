@@ -1,11 +1,26 @@
 const db = require("../shared/mongo");
 const bcrypt = require("bcrypt");
 const { ObjectId } = require("mongodb");
+const mongo = require("../shared/mongo");
 
 const service = {
   //update user
   async updateUser(req, res) {
     console.log("update process");
+    try {
+      if (req.body.password) {
+        req.body.password = await bcrypt.hash(req.body.password, Number(12));
+      }
+      console.log(req.user.userId);
+      const updateduser = await db.users.findOneAndUpdate(
+        { _id: ObjectId(req.user.userId) },
+        { $set: req.body },
+        { ReturnDocument: "after" }
+      );
+      res.status(200).send(updateduser);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
   },
 
   //detete user
