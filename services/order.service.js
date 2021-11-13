@@ -45,7 +45,9 @@ const service = {
   async getOrder(req, res) {
     console.log("get order");
     try {
-      res.status(200).send();
+      const get = await db.orders.find({ userId: req.params.id }).toArray();
+      console.log(get);
+      res.status(200).send(get);
     } catch (err) {
       res.status(500).send(err.message);
     }
@@ -55,7 +57,8 @@ const service = {
   async getAllOrder(req, res) {
     console.log("get all order");
     try {
-      res.status(200).send();
+      const orders = await db.orders.find().limit(5).toArray();
+      res.status(200).send(orders);
     } catch (err) {
       res.status(500).send(err.message);
     }
