@@ -6,6 +6,7 @@ const app = express();
 
 //routes modules imports
 const authRoutes = require("./routes/auth.routes");
+const userRoutes = require("./routes/users.routes");
 
 (async () => {
   try {
@@ -22,7 +23,7 @@ const authRoutes = require("./routes/auth.routes");
     //middlewares
     app.use("/auth", authRoutes);
 
-    // app.use("/users", userRoutes);
+    app.use("/users", userRoutes);
 
     // app.use("/product", productRoutes);
 
