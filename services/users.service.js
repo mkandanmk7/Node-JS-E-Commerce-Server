@@ -24,6 +24,14 @@ const service = {
   },
 
   //detete user
+  async deleteUser(req, res) {
+    try {
+      await db.users.deleteOne({ _id: ObjectId(req.params.id) });
+      res.status(200).send("user deleted");
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  },
 
   //get user with id
   async getUser(req, res) {

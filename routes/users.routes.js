@@ -8,7 +8,9 @@ const {
 
 //update
 router.put("/:id", verifyTokenAndAuthorization, service.updateUser);
+
 //delete
+router.delete("/:id", verifyTokenAndAuthorization, service.deleteUser);
 
 //get user with id
 router.get("/find/:id", verifyTokenAndAdmin, service.getUser);
