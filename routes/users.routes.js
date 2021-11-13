@@ -17,6 +17,8 @@ router.get("/find/:id", verifyTokenAndAdmin, service.getUser);
 
 //get all user
 router.get("/", verifyTokenAndAdmin, service.getAllUser);
+
 //stats
+router.get("/stats", verifyTokenAndAdmin, service.userStats);
 
 module.exports = router;

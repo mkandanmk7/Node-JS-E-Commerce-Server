@@ -63,6 +63,26 @@ const service = {
   },
 
   //get user stats
+  async userStats(req, res) {
+    const date = new Date();
+    const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+
+    try {
+      const data = await db.users
+        .aggregate([
+          { $match: { createdAt: { $gte: lastYear } } },
+          {
+            $project: {
+              month: { $month: "$createdAt" },
+            },
+          },
+          { $group: { _id: "$month", total: { $sum: 1 } } },
+        ])
+        .toArray();
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  },
 };
 
 module.exports = service;
