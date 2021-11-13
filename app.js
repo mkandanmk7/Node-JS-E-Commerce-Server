@@ -8,6 +8,7 @@ const app = express();
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/users.routes");
 const productRoutes = require("./routes/products.routes");
+const cartRoutes = require("./routes/cart.routes");
 
 (async () => {
   try {
@@ -28,7 +29,7 @@ const productRoutes = require("./routes/products.routes");
 
     app.use("/product", productRoutes);
 
-    // app.use("/cart", cartRoutes);
+    app.use("/cart", cartRoutes);
 
     // app.use("/order", orderRoutes);
 
