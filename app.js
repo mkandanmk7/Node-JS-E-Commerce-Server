@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/users.routes");
 const productRoutes = require("./routes/products.routes");
 const cartRoutes = require("./routes/cart.routes");
+const orderRoutes = require("./routes/orders.routes");
 
 (async () => {
   try {
@@ -31,7 +32,7 @@ const cartRoutes = require("./routes/cart.routes");
 
     app.use("/cart", cartRoutes);
 
-    // app.use("/order", orderRoutes);
+    app.use("/order", orderRoutes);
 
     // app.use("/checkout", stripeRoutes);
     //server starter
