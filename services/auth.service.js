@@ -60,6 +60,7 @@ const service = {
       );
       // password not visible in response
       const { password, ...others } = userExist;
+      console.log(others);
 
       res.status(200).send({ token, ...others });
     } catch (error) {
