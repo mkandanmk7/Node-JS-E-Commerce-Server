@@ -61,7 +61,7 @@ const service = {
       // password not visible in response
       const { password, ...others } = userExist;
 
-      res.status(200).send({ token, others });
+      res.status(200).send({ token, ...others });
     } catch (error) {
       console.log("error in login", error);
       res.status(500).send("Error in login");
