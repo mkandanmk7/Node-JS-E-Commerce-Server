@@ -10,7 +10,7 @@ const userRoutes = require("./routes/users.routes");
 const productRoutes = require("./routes/products.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/orders.routes");
-
+const stripeRoutes = require("./routes/stripe.routes");
 (async () => {
   try {
     app.use(cors());
@@ -34,7 +34,7 @@ const orderRoutes = require("./routes/orders.routes");
 
     app.use("/order", orderRoutes);
 
-    // app.use("/checkout", stripeRoutes);
+    app.use("/checkout", stripeRoutes);
     //server starter
     app.listen(port, () => {
       console.log(`server running at ${port}`);
