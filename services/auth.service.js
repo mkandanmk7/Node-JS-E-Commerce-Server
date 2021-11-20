@@ -96,7 +96,7 @@ const service = {
         { ReturnDocument: "after" }
       );
 
-      const link = `https://mayu-makeyouup.netlify.app/auth/verifyAndUpdatePassword/${user._id}/${token}`;
+      const link = `https://mayu-makeyouup.netlify.app/resetpassword/${user._id}/${token}`;
       await sendMail(user.email, "password reset", link);
       res
         .status(200)
