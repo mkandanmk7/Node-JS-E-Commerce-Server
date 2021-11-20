@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 const { ObjectId } = require("mongodb");
-const sentMail = require("../shared/sendMailer");
+const sendMail = require("../shared/sendMailer");
 
 const service = {
   async register(req, res) {
@@ -96,8 +96,8 @@ const service = {
         { ReturnDocument: "after" }
       );
 
-      const link = `https://mayu-makeyouup.netlify.app/resetPassword/${user._id}/${token}`;
-      await sentMail(user.email, "password reset", link);
+      const link = `https://mayu-makeyouup.netlify.app/auth/verifyAndUpdatePassword/${user._id}/${token}`;
+      await sendMail(user.email, "password reset", link);
       res
         .status(200)
         .send({ message: "Link sent to your email, Check it", link });
@@ -109,6 +109,8 @@ const service = {
   //verify token and change pass
   async verifyAndUpdatePassword(req, res) {
     try {
+      console.log(req.params.userid);
+      console.log("userId :", req.params.userId);
       //use id
       console.log("update process");
       let user = await db.users.findOne({ _id: ObjectId(req.params.userid) });
@@ -125,7 +127,7 @@ const service = {
       if (isValidToken && isExpired) {
         const hashedPassword = await bcrypt.hash(req.body.password, Number(12));
         let newPass = await db.users.findOneAndUpdate(
-          { _id: ObjectId(req.params.userId) },
+          { _id: ObjectId(req.params.userid) },
           {
             $set: { password: hashedPassword },
             $unset: { resetToken: 1, resetExpire: 1 },

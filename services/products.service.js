@@ -1,5 +1,5 @@
 const db = require("../shared/mongo");
-const { ObjectId } = require("mongodb");
+const { ObjectId } = require("bson");
 const { productSchema } = require("../shared/schema");
 
 const service = {
@@ -55,8 +55,10 @@ const service = {
       const product = await db.products.findOne({
         _id: ObjectId(req.params.id),
       });
+      console.log(req.params.id);
+      console.log(product);
       //   console.log(product); //products details
-      res.status(200).send(product);
+      res.status(200).send({ data: "data reci", product });
     } catch (err) {
       res.status(500).send(err.message);
     }
