@@ -89,7 +89,7 @@ const service = {
           }
         }
         console.log(query);
-        if (sorr && query["#and"].length == 0) {
+        if (sort && query["#and"].length == 0) {
           sort === "high" //asc or desc
             ? (products = await db.products
                 .find()
