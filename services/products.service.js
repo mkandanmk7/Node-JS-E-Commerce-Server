@@ -58,7 +58,7 @@ const service = {
       console.log(req.params.id);
       console.log(product);
       //   console.log(product); //products details
-      res.status(200).send({ data: "data reci", product });
+      res.status(200).send(product);
     } catch (err) {
       res.status(500).send(err.message);
     }
