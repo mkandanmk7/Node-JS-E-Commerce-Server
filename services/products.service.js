@@ -63,34 +63,37 @@ const service = {
       res.status(500).send(err.message);
     }
   },
-  //get all prouducts
+
   async getAllProduct(req, res) {
-    console.log("process started");
     try {
       if (Object.keys(req.query).length === 0) {
         let products = await db.products.find().toArray();
-
         res.status(200).send(products);
       } else {
         let query = {};
-        query[$and] = [];
+        query["$and"] = [];
         let sort, products;
         for (let key in req.query) {
           console.log(key, req.query);
           if (key === "sort") {
             sort = req.query[key];
+          } else if (key === "name") {
+            query["$and"].push({
+              name: { $regex: req.query[key], $options: "i" },
+            });
           } else if (key === "price") {
             values = req.query[key].split(",");
             values = values.map((a) => parseInt(a));
             query["$and"].push({ [key]: { $lt: values[1], $gte: values[0] } });
           } else {
-            query["$and"].push({ [key]: { $lt: values[1], $gte: values[0] } });
             query["$and"].push({ [key]: { $in: req.query[key].split(",") } });
           }
         }
+
         console.log(query);
-        if (sort && query["#and"].length == 0) {
-          sort === "high" //asc or desc
+
+        if (sort && query["$and"].length == 0) {
+          sort === "high"
             ? (products = await db.products
                 .find()
                 .sort({ price: -1 })
@@ -99,11 +102,22 @@ const service = {
                 .find()
                 .sort({ price: 1 })
                 .toArray());
+        } else if (sort && query["$and"].length > 0) {
+          sort === "high"
+            ? (products = await db.products
+                .find(query)
+                .sort({ price: -1 })
+                .toArray())
+            : (products = await db.products
+                .find(query)
+                .sort({ price: 1 })
+                .toArray());
         } else products = await db.products.find(query).toArray();
         res.status(200).send(products);
       }
     } catch (err) {
-      res.status(500).send(err.message);
+      console.log("Error in fetching all Products", err);
+      res.status(500).send(err);
     }
   },
 };
